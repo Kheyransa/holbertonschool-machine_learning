@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-"""Performs element-wise operations using NumPy"""
-import numpy as np
+"""Performs element-wise operations without explicit import"""
 
 
 def np_elementwise(mat1, mat2):
