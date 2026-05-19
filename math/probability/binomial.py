@@ -21,8 +21,7 @@ class Binomial:
                 raise ValueError("data must contain multiple values")
 
             mean = sum(data) / len(data)
-            
-            # Sətir limitini keçməmək üçün variance hesabını böldük
+
             total_sum = sum((x - mean) ** 2 for x in data)
             variance = total_sum / len(data)
 
