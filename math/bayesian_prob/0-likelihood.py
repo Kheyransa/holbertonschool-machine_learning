@@ -21,14 +21,20 @@ def likelihood(x, n, P):
     if np.any(P < 0) or np.any(P > 1):
         raise ValueError("All values in P must be in the range [0, 1]")
 
+    # Faktorial hesablamaq üçün daxili köməkçi funksiya
+    def fact(num):
+        f = 1
+        for i in range(1, num + 1):
+            f *= i
+        return f
+
     # Kombinasiyanın hesablanması: n! / (x! * (n - x)!)
-    import math
-    n_fact = math.factorial(n)
-    x_fact = math.factorial(x)
-    nx_fact = math.factorial(n - x)
+    n_fact = fact(n)
+    x_fact = fact(x)
+    nx_fact = fact(n - x)
     combination = n_fact / (x_fact * nx_fact)
 
-    # Likelihood massivinin hesablanması: combination * P^x * (1 - P)^(n - x)
+    # Likelihood massivinin hesablanması
     l_value = combination * (P ** x) * ((1 - P) ** (n - x))
 
     return l_value
