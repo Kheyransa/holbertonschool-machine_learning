@@ -36,7 +36,9 @@ class Normal:
         pi = 3.1415926536
         e = 2.7182818285
 
-        coefficient = 1 / (self.stddev * ((2 * pi) ** 0.5))
+        # Sətir limitini keçməmək üçün əmsalı aşağıdakı kimi böldük
+        stddev_part = self.stddev * ((2 * pi) ** 0.5)
+        coefficient = 1 / stddev_part
         exponent = -0.5 * (((x - self.mean) / self.stddev) ** 2)
 
         pdf_value = coefficient * (e ** exponent)
@@ -46,11 +48,9 @@ class Normal:
         """Calculates the value of the CDF for a given x-value"""
         pi = 3.1415926536
 
-        # z-score-u tapırıq və erf funksiyası üçün daxili dəyişəni (val) hesablayırıq
         z = (x - self.mean) / self.stddev
         val = z / (2 ** 0.5)
 
-        # erf(val) approksimasiyası (Maclaurin sırası ilə)
         erf = (2 / (pi ** 0.5)) * (
             val -
             (val ** 3) / 3 +
