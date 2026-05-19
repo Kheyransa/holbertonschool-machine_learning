@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Contains the continuous posterior function for Bayesian probability"""
+import numpy as np
 from scipy import special
 
 
@@ -32,5 +33,5 @@ def posterior(x, n, p1, p2):
     cdf_p2 = special.betainc(alpha, beta, p2)
     cdf_p1 = special.betainc(alpha, beta, p1)
 
-    # Aralıqdakı ehtimal fərqlə tapılır
-    return float(cdf_p2 - cdf_p1)
+    # Test faylının .round() metodunu dəstəkləməsi üçün np.float64 istifadə edirik
+    return np.float64(cdf_p2 - cdf_p1)
