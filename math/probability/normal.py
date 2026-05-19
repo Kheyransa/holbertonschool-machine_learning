@@ -36,11 +36,28 @@ class Normal:
         pi = 3.1415926536
         e = 2.7182818285
 
-        # Düsturun sol tərəfi: 1 / (stddev * sqrt(2 * pi))
         coefficient = 1 / (self.stddev * ((2 * pi) ** 0.5))
-
-        # Düsturun sağ tərəfi: e ^ (-0.5 * z^2)
         exponent = -0.5 * (((x - self.mean) / self.stddev) ** 2)
 
         pdf_value = coefficient * (e ** exponent)
         return float(pdf_value)
+
+    def cdf(self, x):
+        """Calculates the value of the CDF for a given x-value"""
+        pi = 3.1415926536
+
+        # z-score-u tapırıq və erf funksiyası üçün daxili dəyişəni (val) hesablayırıq
+        z = (x - self.mean) / self.stddev
+        val = z / (2 ** 0.5)
+
+        # erf(val) approksimasiyası (Maclaurin sırası ilə)
+        erf = (2 / (pi ** 0.5)) * (
+            val -
+            (val ** 3) / 3 +
+            (val ** 5) / 10 -
+            (val ** 7) / 42 +
+            (val ** 9) / 216
+        )
+
+        cdf_value = 0.5 * (1 + erf)
+        return float(cdf_value)
