@@ -21,12 +21,13 @@ class Binomial:
                 raise ValueError("data must contain multiple values")
 
             mean = sum(data) / len(data)
-            variance = sum((x - mean) ** 2 for x in data) / len(data)
+            
+            # Sətir limitini keçməmək üçün variance hesabını böldük
+            total_sum = sum((x - mean) ** 2 for x in data)
+            variance = total_sum / len(data)
 
-            # İlkin p və n parametrinin tapılması
             p_initial = 1 - (variance / mean)
             n_estimated = mean / p_initial
 
-            # n-in ən yaxın tam ədədə yuvarlaqlaşdırılması və p-nin yenidən hesabı
             self.n = int(round(n_estimated))
             self.p = float(mean / self.n)
