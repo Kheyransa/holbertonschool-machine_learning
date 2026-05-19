@@ -6,6 +6,7 @@ class Poisson:
     """Class that represents a poisson distribution"""
 
     def __init__(self, data=None, lambtha=1.):
+        """Initializes the Poisson distribution"""
         if data is None:
             if lambtha <= 0:
                 raise ValueError("lambtha must be a positive value")
@@ -19,6 +20,7 @@ class Poisson:
             self.lambtha = float(sum(data) / len(data))
 
     def pmf(self, k):
+        """Calculates the value of the PMF for a given number of successes"""
         if not isinstance(k, int):
             k = int(k)
 
