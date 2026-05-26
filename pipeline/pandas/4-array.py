@@ -2,7 +2,6 @@
 """
 Defines a function that converts specific DataFrame rows to a numpy array
 """
-import pandas as pd
 
 
 def array(df):
@@ -11,7 +10,7 @@ def array(df):
     and converts them into a numpy.ndarray.
 
     Parameters:
-        df (pd.DataFrame): The input DataFrame
+        df: The input DataFrame
 
     Returns:
         numpy.ndarray: The selected data converted to a numpy array
