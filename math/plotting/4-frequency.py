@@ -17,9 +17,6 @@ def frequency():
     bins = np.arange(0, 101, 10)
     plt.hist(student_grades, bins=bins, edgecolor='black')
 
-    plt.xlim(0, 100)
-    plt.xticks(bins)
-
     plt.xlabel('Grades')
     plt.ylabel('Number of Students')
     plt.title('Project A')
