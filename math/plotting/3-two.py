@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 
 def two():
     """
-    Plots the exponential decay of C-14 and Ra-226 with a legend and axis limits
+    Plots the exponential decay of C-14 and Ra-226 elements
     """
     x = np.arange(0, 21000, 1000)
     r = np.log(0.5)
