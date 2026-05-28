@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 
 def frequency():
     """
-    Plots a histogram of student grades with black edges and specific bins
+    Plots a histogram of student grades with black edges
     """
     np.random.seed(5)
     student_grades = np.random.normal(68, 15, 50)
