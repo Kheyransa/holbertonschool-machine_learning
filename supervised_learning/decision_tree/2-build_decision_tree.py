@@ -164,4 +164,4 @@ class Decision_Tree():
         """
         Returns string representation of the entire tree
         """
-        return self.root.__str__()
+        return self.root.__str__().rstrip('\n')
