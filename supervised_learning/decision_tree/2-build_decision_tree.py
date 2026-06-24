@@ -15,7 +15,7 @@ class Node:
                  left_child=None, right_child=None,
                  is_root=False, depth=0):
         """
-        Initialize a node.
+        Initialize node.
         """
         self.feature = feature
         self.threshold = threshold
@@ -52,34 +52,34 @@ class Node:
         Add prefix for left child.
         """
         lines = text.split("\n")
-        new_text = "+---> " + lines[0] + "\n"
+        new_text = "+---> " + lines[0]
 
         for line in lines[1:]:
-            new_text += "| " + line + "\n"
+            new_text += "\n" + "| " + line
 
-        return new_text.rstrip("\n")
+        return new_text
 
     def right_child_add_prefix(self, text):
         """
         Add prefix for right child.
         """
         lines = text.split("\n")
-        new_text = "+---> " + lines[0] + "\n"
+        new_text = "+---> " + lines[0]
 
         for line in lines[1:]:
-            new_text += "| " + line + "\n"
+            new_text += "\n" + line
 
-        return new_text.rstrip("\n")
+        return new_text
 
 
 class Leaf(Node):
     """
-    Leaf class for decision tree.
+    Leaf class.
     """
 
     def __init__(self, value, depth=None):
         """
-        Initialize a leaf.
+        Initialize leaf.
         """
         super().__init__()
         self.value = value
@@ -90,7 +90,7 @@ class Leaf(Node):
         """
         Return string representation of leaf.
         """
-        return "-> leaf [value={}]".format(self.value)
+        return "leaf [value={}]".format(self.value)
 
 
 class Decision_Tree:
