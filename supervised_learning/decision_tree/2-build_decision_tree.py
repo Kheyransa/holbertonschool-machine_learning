@@ -3,6 +3,8 @@
 Build decision tree classes.
 """
 
+import numpy as np
+
 
 class Node:
     """
@@ -26,26 +28,22 @@ class Node:
 
     def __str__(self):
         """
-        Return string representation of a node.
+        Return string representation of node.
         """
         if self.is_root:
-            text = "root"
+            text = "root [feature={}, threshold={}]".format(
+                self.feature, self.threshold)
         else:
-            text = "node"
-
-        text += " [feature={}, threshold={}]".format(
-            self.feature, self.threshold
-        )
+            text = "node [feature={}, threshold={}]".format(
+                self.feature, self.threshold)
 
         if self.left_child is not None:
             text += "\n" + self.left_child_add_prefix(
-                str(self.left_child)
-            )
+                str(self.left_child))
 
         if self.right_child is not None:
             text += "\n" + self.right_child_add_prefix(
-                str(self.right_child)
-            )
+                str(self.right_child))
 
         return text
 
@@ -54,10 +52,10 @@ class Node:
         Add prefix for left child.
         """
         lines = text.split("\n")
-        new_text = "    +--" + lines[0] + "\n"
+        new_text = "+---> " + lines[0] + "\n"
 
         for line in lines[1:]:
-            new_text += "    |  " + line + "\n"
+            new_text += "| " + line + "\n"
 
         return new_text.rstrip("\n")
 
@@ -66,10 +64,10 @@ class Node:
         Add prefix for right child.
         """
         lines = text.split("\n")
-        new_text = "       +--" + lines[0] + "\n"
+        new_text = "+---> " + lines[0] + "\n"
 
         for line in lines[1:]:
-            new_text += "          " + line + "\n"
+            new_text += "| " + line + "\n"
 
         return new_text.rstrip("\n")
 
@@ -106,8 +104,6 @@ class Decision_Tree:
         """
         Initialize decision tree.
         """
-        import numpy as np
-
         self.rng = np.random.default_rng(seed)
 
         if root:
