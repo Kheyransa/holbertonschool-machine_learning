@@ -28,31 +28,42 @@ class Node:
         self.lower = None
         self.upper = None
 
+    def get_leaves_below(self):
+        """
+        Return all leaves below this node.
+        """
+        leaves = []
+
+        leaves += self.left_child.get_leaves_below()
+        leaves += self.right_child.get_leaves_below()
+
+        return leaves
+
     def update_bounds_below(self):
         """
-        Compute bounds for children recursively.
+        Compute bounds recursively.
         """
 
         if self.is_root:
             self.upper = {0: np.inf}
             self.lower = {0: -np.inf}
 
-        for child, side in [
-                (self.left_child, "left"),
-                (self.right_child, "right")
-        ]:
-            if child is not None:
-                child.lower = self.lower.copy()
-                child.upper = self.upper.copy()
+        # left child
+        if self.left_child:
+            self.left_child.lower = self.lower.copy()
+            self.left_child.upper = self.upper.copy()
 
-                if side == "left":
-                    child.upper[self.feature] = self.threshold
+            self.left_child.upper[self.feature] = self.threshold
 
-                else:
-                    child.lower[self.feature] = self.threshold
+        # right child
+        if self.right_child:
+            self.right_child.lower = self.lower.copy()
+            self.right_child.upper = self.upper.copy()
+
+            self.right_child.lower[self.feature] = self.threshold
 
         for child in [self.left_child, self.right_child]:
-            if child is not None:
+            if child:
                 child.update_bounds_below()
 
 
@@ -70,9 +81,15 @@ class Leaf(Node):
         self.is_leaf = True
         self.depth = depth
 
+    def get_leaves_below(self):
+        """
+        Return this leaf.
+        """
+        return [self]
+
     def update_bounds_below(self):
         """
-        Update bounds below leaf.
+        Do nothing for leaf.
         """
         pass
 
@@ -103,8 +120,14 @@ class Decision_Tree:
         self.split_criterion = split_criterion
         self.predict = None
 
+    def get_leaves(self):
+        """
+        Return all leaves of tree.
+        """
+        return self.root.get_leaves_below()
+
     def update_bounds(self):
         """
-        Update bounds of all nodes.
+        Update bounds of tree.
         """
         self.root.update_bounds_below()
