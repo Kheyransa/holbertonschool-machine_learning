@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Defines classes for building a decision tree and string representations
+Defines classes for building a decision tree and printing its structure
 """
 import numpy as np
 
@@ -63,7 +63,8 @@ class Node:
         lines = text.split("\n")
         new_text = "    +--" + lines[0] + "\n"
         for x in lines[1:]:
-            new_text += ("    |  " + x) + "\n"
+            if x:
+                new_text += ("    |  " + x) + "\n"
         return new_text
 
     def right_child_add_prefix(self, text):
@@ -73,7 +74,8 @@ class Node:
         lines = text.split("\n")
         new_text = "    +--" + lines[0] + "\n"
         for x in lines[1:]:
-            new_text += ("       " + x) + "\n"
+            if x:
+                new_text += ("       " + x) + "\n"
         return new_text
 
     def __str__(self):
@@ -81,11 +83,11 @@ class Node:
         Returns string representation of the node and its children
         """
         if self.is_root:
-            out = f"root [feature={self.feature}, " \
-                  f"threshold={self.threshold}]\n"
+            out = (f"root [feature={self.feature}, "
+                   f"threshold={self.threshold}]\n")
         else:
-            out = f"node [feature={self.feature}, " \
-                  f"threshold={self.threshold}]\n"
+            out = (f"node [feature={self.feature}, "
+                   f"threshold={self.threshold}]\n")
 
         if self.left_child:
             out += self.left_child_add_prefix(self.left_child.__str__())
