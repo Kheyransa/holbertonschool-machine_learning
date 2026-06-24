@@ -288,7 +288,6 @@ class Decision_Tree():
         threshold = (1 - x) * feature_min + x * feature_max
         return feature, threshold
 
-
     def possible_thresholds(self, node, feature):
         """
         Returns midpoints between consecutive unique feature values in node
