@@ -323,13 +323,12 @@ class Decision_Tree():
         self.update_predict()
 
         if verbose == 1:
-            print(f"  Training finished.\n"
-                  f"- Depth                     : {self.depth()}\n"
-                  f"- Number of nodes           : {self.count_nodes()}\n"
-                  f"- Number of leaves          : "
-                  f"{self.count_nodes(only_leaves=True)}\n"
-                  f"- Accuracy on training data : "
-                  f"{self.accuracy(self.explanatory, self.target)}")
+            print("Training finished.")
+            print(f"Depth : {self.depth()}")
+            print(f"Number of nodes : {self.count_nodes()}")
+            print(f"Number of leaves : {self.count_nodes(only_leaves=True)}")
+            print(f"Accuracy on training data : "
+                  f"{self.accuracy(self.explanatory, self.target)}\n")
 
     def fit_node(self, node):
         """
