@@ -72,10 +72,6 @@ class Isolation_Random_Tree():
         """
         Updates the predict function using leaf depth as prediction value
         """
-        self.update_bounds()
-        all_leaves = self.get_leaves()
-        for leaf in all_leaves:
-            leaf.update_indicator()
         self.predict = lambda A: np.array(
             [self.root.pred(x) for x in A])
 
@@ -133,7 +129,7 @@ class Isolation_Random_Tree():
         )
 
         is_left_leaf = (
-            np.sum(left_population) < self.min_pop or
+            np.sum(left_population) <= self.min_pop or
             node.depth + 1 >= self.max_depth
         )
 
@@ -144,7 +140,7 @@ class Isolation_Random_Tree():
             self.fit_node(node.left_child)
 
         is_right_leaf = (
-            np.sum(right_population) < self.min_pop or
+            np.sum(right_population) <= self.min_pop or
             node.depth + 1 >= self.max_depth
         )
 
