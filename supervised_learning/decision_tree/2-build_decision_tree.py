@@ -1,12 +1,29 @@
 #!/usr/bin/env python3
+"""
+Module containing the classes used to build, print, and use a decision tree.
+"""
 
 import numpy as np
 
 
 class Node:
+    """
+    Represents an internal node of a decision tree.
+    """
 
     def __init__(self, feature=None, threshold=None, left_child=None,
                  right_child=None, is_root=False, depth=0):
+        """
+        Initialize a node.
+
+        Args:
+            feature: Feature index used for splitting.
+            threshold: Threshold value used for splitting.
+            left_child: Left child node.
+            right_child: Right child node.
+            is_root: Whether this node is the root.
+            depth: Depth of the node.
+        """
         self.feature = feature
         self.threshold = threshold
         self.left_child = left_child
@@ -17,6 +34,9 @@ class Node:
         self.depth = depth
 
     def __str__(self):
+        """
+        Return a string representation of the tree node.
+        """
         if self.is_root:
             result = (
                 f"root [feature={self.feature}, "
@@ -37,6 +57,9 @@ class Node:
         return result
 
     def left_child_add_prefix(self, text):
+        """
+        Add formatting prefix for the left child.
+        """
         lines = text.rstrip("\n").split("\n")
         result = "    +--" + lines[0] + "\n"
 
@@ -46,6 +69,9 @@ class Node:
         return result
 
     def right_child_add_prefix(self, text):
+        """
+        Add formatting prefix for the right child.
+        """
         lines = text.rstrip("\n").split("\n")
         result = "    +--" + lines[0] + "\n"
 
@@ -56,21 +82,47 @@ class Node:
 
 
 class Leaf(Node):
+    """
+    Represents a leaf node containing a prediction value.
+    """
 
     def __init__(self, value, depth=None):
+        """
+        Initialize a leaf.
+
+        Args:
+            value: Prediction value stored in the leaf.
+            depth: Depth of the leaf.
+        """
         super().__init__()
         self.value = value
         self.is_leaf = True
         self.depth = depth
 
     def __str__(self):
+        """
+        Return a string representation of the leaf.
+        """
         return f"-> leaf [value={self.value}]"
 
 
 class Decision_Tree:
+    """
+    Represents a decision tree.
+    """
 
     def __init__(self, max_depth=10, min_pop=1, seed=0,
                  split_criterion="random", root=None):
+        """
+        Initialize a decision tree.
+
+        Args:
+            max_depth: Maximum depth of the tree.
+            min_pop: Minimum population needed to split.
+            seed: Random generator seed.
+            split_criterion: Criterion used for splitting.
+            root: Root node of the tree.
+        """
         self.rng = np.random.default_rng(seed)
 
         if root:
@@ -86,4 +138,7 @@ class Decision_Tree:
         self.predict = None
 
     def __str__(self):
+        """
+        Return a string representation of the decision tree.
+        """
         return self.root.__str__()
