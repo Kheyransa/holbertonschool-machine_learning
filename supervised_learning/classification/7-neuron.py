@@ -2,6 +2,7 @@
 """Module that defines a Neuron class for binary classification"""
 
 import numpy as np
+import matplotlib.pyplot as plt
 
 
 class Neuron:
@@ -108,21 +109,28 @@ class Neuron:
         self.__W = self.__W - alpha * dW
         self.__b = self.__b - alpha * db
 
-    def train(self, X, Y, iterations=5000, alpha=0.05):
+    def train(self, X, Y, iterations=5000, alpha=0.05,
+              verbose=True, graph=True, step=100):
         """
-        Trains the neuron
+        Trains the neuron and optionally prints/plots progress
 
         Args:
             X (numpy.ndarray): shape (nx, m), contains the input data
             Y (numpy.ndarray): shape (1, m), correct labels
             iterations (int): number of iterations to train over
             alpha (float): the learning rate
+            verbose (bool): whether to print training info
+            graph (bool): whether to graph training info
+            step (int): interval at which to print/plot
 
         Raises:
             TypeError: if iterations is not an integer
             ValueError: if iterations is not positive
             TypeError: if alpha is not a float
             ValueError: if alpha is not positive
+            TypeError: if step is not an integer (only if verbose or graph)
+            ValueError: if step is not positive or > iterations
+                (only if verbose or graph)
 
         Returns:
             The evaluation of the training data after training
@@ -135,9 +143,34 @@ class Neuron:
             raise TypeError("alpha must be a float")
         if alpha <= 0:
             raise ValueError("alpha must be positive")
+        if verbose or graph:
+            if not isinstance(step, int):
+                raise TypeError("step must be an integer")
+            if step <= 0 or step > iterations:
+                raise ValueError("step must be positive and <= iterations")
 
-        for _ in range(iterations):
+        costs = []
+        steps = []
+
+        for i in range(iterations + 1):
             A = self.forward_prop(X)
-            self.gradient_descent(X, Y, A, alpha)
+            cost = self.cost(Y, A)
+
+            if i % step == 0 or i == iterations:
+                if verbose:
+                    print("Cost after {} iterations: {}".format(i, cost))
+                if graph:
+                    costs.append(cost)
+                    steps.append(i)
+
+            if i < iterations:
+                self.gradient_descent(X, Y, A, alpha)
+
+        if graph:
+            plt.plot(steps, costs, 'b-')
+            plt.xlabel('iteration')
+            plt.ylabel('cost')
+            plt.title('Training Cost')
+            plt.show()
 
         return self.evaluate(X, Y)
