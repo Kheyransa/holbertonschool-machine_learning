@@ -3,6 +3,9 @@
 Trains a Keras model.
 """
 
+import tensorflow.keras as K
+
+
 def train_model(network, data, labels, batch_size, epochs,
                 verbose=True, shuffle=False):
     """
@@ -14,8 +17,8 @@ def train_model(network, data, labels, batch_size, epochs,
         labels: one-hot labels
         batch_size: batch size
         epochs: number of epochs
-        verbose: verbosity mode
-        shuffle: whether to shuffle the data
+        verbose: determines if output is printed
+        shuffle: determines whether to shuffle the data
 
     Returns:
         The History object generated after training.
