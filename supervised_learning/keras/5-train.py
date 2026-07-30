@@ -1,7 +1,10 @@
 #!/usr/bin/env python3
 """
-Train a model using mini-batch gradient descent
+Train a model using mini-batch gradient descent.
 """
+
+import tensorflow.keras as K
+
 
 def train_model(network, data, labels, batch_size, epochs,
                 validation_data=None, verbose=True, shuffle=False):
@@ -10,18 +13,18 @@ def train_model(network, data, labels, batch_size, epochs,
 
     Args:
         network: the model to train
-        data: numpy.ndarray of shape (m, nx) containing the input data
-        labels: one-hot numpy.ndarray of shape (m, classes)
-        batch_size: size of the mini-batches
-        epochs: number of epochs to train
-        validation_data: data to validate the model with
-        verbose: determines if output should be printed during training
-        shuffle: determines whether to shuffle the data every epoch
+        data: input data
+        labels: one-hot labels
+        batch_size: mini-batch size
+        epochs: number of epochs
+        validation_data: data to validate with
+        verbose: whether to print progress
+        shuffle: whether to shuffle data
 
     Returns:
         The History object generated after training.
     """
-    history = network.fit(
+    return network.fit(
         x=data,
         y=labels,
         batch_size=batch_size,
@@ -30,5 +33,3 @@ def train_model(network, data, labels, batch_size, epochs,
         verbose=verbose,
         shuffle=shuffle
     )
-
-    return history
