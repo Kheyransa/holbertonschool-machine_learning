@@ -28,8 +28,8 @@ def build_model(nx, layers, activations, lambtha, keep_prob):
         x = K.layers.Dense(
             units=layers[i],
             activation=activations[i],
-            kernel_initializer=K.initializers.HeNormal(),
-            kernel_regularizer=K.regularizers.L2(lambtha)
+           kernel_initializer='he_normal',
+           kernel_regularizer=K.regularizers.l2(lambtha)
         )(x)
 
         if i != len(layers) - 1:
