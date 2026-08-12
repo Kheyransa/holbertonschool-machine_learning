@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 """Save and load weights."""
 
+import tensorflow.keras as K
+
 
 def save_weights(network, filename, save_format='keras'):
     """Save a model's weights."""
