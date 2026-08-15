@@ -1,23 +1,19 @@
 #!/usr/bin/env python3
-"""
-Sets up Adam optimization for a Keras model.
-"""
-
+"""Sets up Adam optimization for a keras model"""
 import tensorflow.keras as K
 
 
 def optimize_model(network, alpha, beta1, beta2):
     """
-    Configures the model for training.
+    Sets up Adam optimization for a keras model with categorical
+    crossentropy loss and accuracy metrics
 
-    Args:
-        network: Keras model
-        alpha: learning rate
-        beta1: first Adam parameter
-        beta2: second Adam parameter
+    network: the model to optimize
+    alpha: learning rate
+    beta1: first Adam optimization parameter
+    beta2: second Adam optimization parameter
 
-    Returns:
-        None
+    Returns: None
     """
     optimizer = K.optimizers.Adam(
         learning_rate=alpha,
@@ -30,3 +26,5 @@ def optimize_model(network, alpha, beta1, beta2):
         loss='categorical_crossentropy',
         metrics=['accuracy']
     )
+
+    return None
