@@ -1,15 +1,17 @@
 #!/usr/bin/env python3
-"""Saves and loads an entire Keras model."""
-
+""" Modul 9-model """
 import tensorflow.keras as K
 
 
 def save_model(network, filename):
-    """Saves an entire model."""
+    """ Bütün modeli fayla saxlayır """
     network.save(filename)
+
     return None
 
 
 def load_model(filename):
-    """Loads an entire model."""
-    return K.models.load_model(filename)
+    """ Fayldan bütün modeli yükləyir """
+    network = K.models.load_model(filename)
+
+    return network
