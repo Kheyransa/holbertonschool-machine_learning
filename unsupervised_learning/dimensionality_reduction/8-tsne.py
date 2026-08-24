@@ -1,66 +1,58 @@
 #!/usr/bin/env python3
-
+"""Performs a t-SNE transformation"""
 import numpy as np
-
 pca = __import__('1-pca').pca
 P_affinities = __import__('4-P_affinities').P_affinities
 grads = __import__('6-grads').grads
 cost = __import__('7-cost').cost
 
 
-def tsne(X, ndims=2, idims=50, perplexity=30.0,
-         iterations=1000, lr=500):
+def tsne(X, ndims=2, idims=50, perplexity=30.0, iterations=1000, lr=500):
     """
-    Performs a t-SNE transformation.
-    """
+    Performs a t-SNE transformation
 
-    # 1. Reduce X using PCA
+    X is a numpy.ndarray of shape (n, d) containing the dataset to be
+        transformed by t-SNE
+        n is the number of data points
+        d is the number of dimensions in each point
+    ndims is the new dimensional representation of X
+    idims is the intermediate dimensional representation of X after PCA
+    perplexity is the perplexity
+    iterations is the number of iterations
+    lr is the learning rate
+
+    Returns: Y, a numpy.ndarray of shape (n, ndim) containing the
+        optimized low dimensional transformation of X
+    """
+    n, d = X.shape
     X = pca(X, idims)
+    P = P_affinities(X, perplexity=perplexity)
+    P = P * 4
+    Y = np.random.randn(n, ndims)
+    Y_prev = Y.copy()
 
-    # 2. Calculate high-dimensional affinities
-    P = P_affinities(X, perplexity)
+    for i in range(iterations):
+        dY, Q = grads(Y, P)
 
-    # 3. Initialize low-dimensional representation
-    n = X.shape[0]
-    Y = np.random.normal(0, 1, (n, ndims))
-
-    # 4. Previous Y for momentum
-    Y_prev = np.zeros_like(Y)
-
-    # 5. Gradient descent
-    for iteration in range(1, iterations + 1):
-
-        # Early exaggeration
-        if iteration <= 100:
-            P_current = 4 * P
+        if i < 20:
+            a = 0.5
         else:
-            P_current = P
+            a = 0.8
 
-        # Momentum
-        if iteration <= 20:
-            alpha = 0.5
+        if i == 0:
+            Y_new = Y - lr * dY
         else:
-            alpha = 0.8
+            Y_new = Y - lr * dY + a * (Y - Y_prev)
 
-        # Calculate gradient
-        # Check your 6-grads.py signature here
-        dY, Q = grads(Y, P_current)
-
-        # Gradient descent update
-        Y_new = Y - lr * dY + alpha * (Y - Y_prev)
-
-        # Save current Y
         Y_prev = Y
-
-        # Update Y
         Y = Y_new
-
-        # Re-center
         Y = Y - np.mean(Y, axis=0)
 
-        # Cost every 100 iterations
-        if iteration % 100 == 0:
-            C = cost(P_current, Q)
-            print("Cost at iteration {}: {}".format(iteration, C))
+        if (i + 1) % 100 == 0:
+            C = cost(P, Q)
+            print("Cost at iteration {}: {}".format(i + 1, C))
+
+        if i == 99:
+            P = P / 4
 
     return Y
