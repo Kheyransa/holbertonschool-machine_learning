@@ -14,48 +14,56 @@ def tsne(X, ndims=2, idims=50, perplexity=30.0,
     """
     Performs a t-SNE transformation.
 
-    X is a numpy.ndarray of shape (n, d)
-    ndims is the new dimensional representation of X
-    idims is the intermediate dimensional representation after PCA
-    perplexity is the perplexity
-    iterations is the number of iterations
-    lr is the learning rate
+    X is a numpy.ndarray of shape (n, d) containing the dataset
+    to be transformed by t-SNE.
+
+    ndims is the new dimensional representation of X.
+    idims is the intermediate dimensional representation of X
+    after PCA.
+    perplexity is the perplexity.
+    iterations is the number of iterations.
+    lr is the learning rate.
 
     Returns:
-        Y, a numpy.ndarray of shape (n, ndims)
+        Y, a numpy.ndarray of shape (n, ndims) containing the
+        optimized low dimensional transformation of X.
     """
+
     n = X.shape[0]
 
-    # Reduce dimensionality before applying t-SNE
+    # Reduce X using PCA
     X = pca(X, idims)
 
-    # Calculate high-dimensional affinities
-    P = P_affinities(X, perplexity)
+    # Calculate P affinities
+    P = P_affinities(X, perplexity=perplexity)
 
     # Early exaggeration
     P = P * 4
 
-    # Initialize low-dimensional representation
+    # Initialize Y
     Y = np.random.normal(0, 1, (n, ndims))
 
-    # Previous position
+    # Previous Y
     Y_prev = Y.copy()
 
     for i in range(iterations):
-        # Calculate gradients
+
+        # Calculate gradients and Q affinities
         dY, Q = grads(Y, P)
 
-        # Momentum parameter
+        # Momentum
         if i < 20:
             a = 0.5
         else:
             a = 0.8
 
-        # Gradient descent + momentum
-        Y_new = Y - lr * dY + a * (Y - Y_prev)
+        # Gradient descent
+        Y_new = Y + lr * dY + a * (Y - Y_prev)
 
-        # Update previous and current Y
+        # Update previous Y
         Y_prev = Y
+
+        # Update Y
         Y = Y_new
 
         # Re-center Y
@@ -66,7 +74,7 @@ def tsne(X, ndims=2, idims=50, perplexity=30.0,
             C = cost(P, Q)
             print("Cost at iteration {}: {}".format(i + 1, C))
 
-        # End early exaggeration after 100 iterations
+        # End early exaggeration
         if i == 99:
             P = P / 4
 
