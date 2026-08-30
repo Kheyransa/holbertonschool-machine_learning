@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Module that calculates the maximization step in the EM algorithm for a GMM"""
+"""Module that calculates the maximization step in the EM algorithm"""
 import numpy as np
 
 
