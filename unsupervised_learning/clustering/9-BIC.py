@@ -1,0 +1,70 @@
+#!/usr/bin/env python3
+"""Module that finds the best number of clusters for a GMM using BIC"""
+import numpy as np
+expectation_maximization = __import__('8-EM').expectation_maximization
+
+
+def BIC(X, kmin=1, kmax=None, iterations=1000, tol=1e-5, verbose=False):
+    """
+    Finds the best number of clusters for a GMM using the
+    Bayesian Information Criterion
+
+    X: numpy.ndarray of shape (n, d), the data set
+    kmin: positive integer, minimum number of clusters to check (inclusive)
+    kmax: positive integer, maximum number of clusters to check (inclusive)
+    iterations: positive integer, max number of iterations for EM
+    tol: non-negative float, tolerance for EM
+    verbose: boolean, whether EM should print information
+
+    Returns: best_k, best_result, l, b, or None, None, None, None on failure
+        best_k: the best value for k based on its BIC
+        best_result: tuple containing pi, m, S for the best k
+        l: numpy.ndarray of shape (kmax - kmin + 1,), log likelihoods
+        b: numpy.ndarray of shape (kmax - kmin + 1,), BIC values
+    """
+    if not isinstance(X, np.ndarray) or len(X.shape) != 2:
+        return None, None, None, None
+    if not isinstance(kmin, int) or kmin <= 0:
+        return None, None, None, None
+
+    n, d = X.shape
+
+    if kmax is None:
+        kmax = n
+
+    if not isinstance(kmax, int) or kmax <= 0:
+        return None, None, None, None
+    if kmin >= kmax:
+        return None, None, None, None
+    if not isinstance(iterations, int) or iterations <= 0:
+        return None, None, None, None
+    if not isinstance(tol, float) or tol < 0:
+        return None, None, None, None
+    if not isinstance(verbose, bool):
+        return None, None, None, None
+
+    results = []
+    l_values = []
+    b_values = []
+
+    for k in range(kmin, kmax + 1):
+        pi, m, S, g, log_l = expectation_maximization(
+            X, k, iterations, tol, verbose)
+        if pi is None or m is None or S is None:
+            return None, None, None, None
+
+        p = (k - 1) + (k * d) + (k * d * (d + 1) // 2)
+        bic = p * np.log(n) - 2 * log_l
+
+        results.append((pi, m, S))
+        l_values.append(log_l)
+        b_values.append(bic)
+
+    l_values = np.array(l_values)
+    b_values = np.array(b_values)
+
+    best_idx = np.argmin(b_values)
+    best_k = kmin + best_idx
+    best_result = results[best_idx]
+
+    return best_k, best_result, l_values, b_values
