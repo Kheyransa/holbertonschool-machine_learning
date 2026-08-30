@@ -8,49 +8,79 @@ def kmeans(X, k, iterations=1000):
 
     Args:
         X: numpy.ndarray of shape (n, d)
-        k: positive integer, number of clusters
-        iterations: positive integer, maximum number of iterations
+            Dataset containing n data points with d dimensions.
+        k: positive integer
+            Number of clusters.
+        iterations: positive integer
+            Maximum number of iterations.
 
     Returns:
-        C: numpy.ndarray of shape (k, d), centroids
-        clss: numpy.ndarray of shape (n,), cluster assignments
-        or None, None on failure
+        C: numpy.ndarray of shape (k, d)
+            Centroids of the clusters.
+        clss: numpy.ndarray of shape (n,)
+            Index of the cluster each data point belongs to.
+
+        Returns None, None if the input is invalid.
     """
 
+    # Validate X
     if not isinstance(X, np.ndarray) or X.ndim != 2:
         return None, None
 
+    # Validate k
     if not isinstance(k, int) or k <= 0 or k > X.shape[0]:
         return None, None
 
+    # Validate iterations
     if not isinstance(iterations, int) or iterations <= 0:
         return None, None
 
-    # Initialize centroids using a multivariate uniform distribution
-    low = np.min(X, axis=0)
-    high = np.max(X, axis=0)
+    # Get minimum and maximum values for each dimension
+    min_values = np.min(X, axis=0)
+    max_values = np.max(X, axis=0)
 
-    C = np.random.uniform(low, high, size=(k, X.shape[1]))
+    # Initialize centroids using multivariate uniform distribution
+    C = np.random.uniform(
+        min_values,
+        max_values,
+        size=(k, X.shape[1])
+    )
 
     for _ in range(iterations):
-        # Calculate distances from every point to every centroid
-        distances = np.linalg.norm(X[:, np.newaxis] - C, axis=2)
 
-        # Assign each point to its closest centroid
+        # Calculate distance between every point and every centroid
+        distances = np.linalg.norm(
+            X[:, np.newaxis] - C,
+            axis=2
+        )
+
+        # Assign every point to its closest centroid
         clss = np.argmin(distances, axis=1)
 
+        # Save old centroids for convergence check
+        C_old = C.copy()
+
         # Calculate new centroids
-        C_new = np.array([
+        C = np.array([
             np.mean(X[clss == i], axis=0)
             if np.any(clss == i)
-            else np.random.uniform(low, high, size=X.shape[1])
+            else np.random.uniform(
+                min_values,
+                max_values,
+                size=X.shape[1]
+            )
             for i in range(k)
         ])
 
-        # Stop if centroids haven't changed
-        if np.array_equal(C, C_new):
-            return C, clss
+        # Stop if centroids have not changed
+        if np.array_equal(C, C_old):
+            break
 
-        C = C_new
+    # Recalculate classes using the FINAL centroids
+    distances = np.linalg.norm(
+        X[:, np.newaxis] - C,
+        axis=2
+    )
+    clss = np.argmin(distances, axis=1)
 
     return C, clss
