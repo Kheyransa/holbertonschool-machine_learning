@@ -1,62 +1,49 @@
 #!/usr/bin/env python3
+"""Module that performs K-means on a dataset"""
 import numpy as np
 
 
 def kmeans(X, k, iterations=1000):
     """
-    Performs K-means clustering on a dataset.
+    Performs K-means on a dataset
 
-    Args:
-        X: numpy.ndarray of shape (n, d)
-        k: positive integer containing the number of clusters
-        iterations: positive integer containing maximum iterations
+    X: numpy.ndarray of shape (n, d) containing the dataset
+    k: positive integer, number of clusters
+    iterations: positive integer, max number of iterations
 
-    Returns:
-        C: numpy.ndarray of shape (k, d), containing centroid means
-        clss: numpy.ndarray of shape (n,), containing cluster indexes
-        None, None on failure
+    Returns: C, clss, or None, None on failure
+        C: numpy.ndarray of shape (k, d), centroid means
+        clss: numpy.ndarray of shape (n,), cluster index for each point
     """
-
-    if not isinstance(X, np.ndarray) or X.ndim != 2:
+    if not isinstance(X, np.ndarray) or len(X.shape) != 2:
         return None, None
-
-    if not isinstance(k, int) or k <= 0 or k > X.shape[0]:
+    if not isinstance(k, int) or k <= 0:
         return None, None
-
     if not isinstance(iterations, int) or iterations <= 0:
         return None, None
 
-    min_values = np.min(X, axis=0)
-    max_values = np.max(X, axis=0)
+    n, d = X.shape
 
-    C = np.random.uniform(
-        min_values,
-        max_values,
-        (k, X.shape[1])
-    )
+    low = X.min(axis=0)
+    high = X.max(axis=0)
+    C = np.random.uniform(low, high, size=(k, d))
 
-    for _ in range(iterations):
-        distances = np.linalg.norm(
-            X[:, np.newaxis] - C,
-            axis=2
-        )
+    for i in range(iterations):
+        C_prev = np.copy(C)
 
+        distances = np.linalg.norm(X[:, np.newaxis] - C, axis=-1)
         clss = np.argmin(distances, axis=1)
 
-        C_new = np.array([
-            np.mean(X[clss == i], axis=0)
-            if np.any(clss == i)
-            else np.random.uniform(
-                min_values,
-                max_values,
-                X.shape[1]
-            )
-            for i in range(k)
-        ])
+        for j in range(k):
+            if np.sum(clss == j) == 0:
+                C[j] = np.random.uniform(low, high, size=(1, d))
+            else:
+                C[j] = X[clss == j].mean(axis=0)
 
-        if np.array_equal(C, C_new):
-            break
+        distances = np.linalg.norm(X[:, np.newaxis] - C, axis=-1)
+        clss = np.argmin(distances, axis=1)
 
-        C = C_new
+        if np.array_equal(C, C_prev):
+            return C, clss
 
     return C, clss
