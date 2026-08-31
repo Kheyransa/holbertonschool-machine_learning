@@ -8,6 +8,8 @@ import matplotlib.pyplot as plt
 
 
 class Simple_GAN(keras.Model):
+    """Simple GAN model that trains a generator and discriminator
+    using a basic adversarial (least-squares) loss"""
 
     def __init__(self, generator, discriminator, latent_generator,
                  real_examples, batch_size=200, disc_iter=2,
